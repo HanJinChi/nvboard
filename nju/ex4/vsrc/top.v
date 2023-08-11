@@ -35,40 +35,33 @@ module bcd7(
   wire [7:0] _result_T_30 = _result_T_1 ? 8'h9f : _result_T_29; // @[Mux.scala 101:16]
   assign io_out = _result_T ? 8'h3 : _result_T_30; // @[Mux.scala 101:16]
 endmodule
-module priority_(
-  input  [7:0] io_in,
-  output [2:0] io_out
+
+
+module top (
+    input clock,
+    output [15:0] out
 );
-  wire [1:0] _GEN_2 = io_in[2] ? 2'h2 : {{1'd0}, io_in[1]}; // @[two.scala 13:31 14:20]
-  wire [1:0] _GEN_3 = io_in[3] ? 2'h3 : _GEN_2; // @[two.scala 13:31 14:20]
-  wire [2:0] _GEN_4 = io_in[4] ? 3'h4 : {{1'd0}, _GEN_3}; // @[two.scala 13:31 14:20]
-  wire [2:0] _GEN_5 = io_in[5] ? 3'h5 : _GEN_4; // @[two.scala 13:31 14:20]
-  wire [2:0] _GEN_6 = io_in[6] ? 3'h6 : _GEN_5; // @[two.scala 13:31 14:20]
-  assign io_out = io_in[7] ? 3'h7 : _GEN_6; // @[two.scala 13:31 14:20]
-endmodule
-module top(
-  input        io_enable,
-  input  [7:0] io_in,
-  output [2:0] io_out,
-  output       io_enableout,
-  output [7:0] io_led
-);
-  wire [3:0] bcdmodule_io_in; // @[two.scala 55:27]
-  wire [7:0] bcdmodule_io_out; // @[two.scala 55:27]
-  wire [7:0] prioritymodule_io_in; // @[two.scala 56:32]
-  wire [2:0] prioritymodule_io_out; // @[two.scala 56:32]
-  wire [2:0] res = prioritymodule_io_out; // @[two.scala 57:19 62:9]
-  bcd7 bcdmodule ( // @[two.scala 55:27]
-    .io_in(bcdmodule_io_in),
-    .io_out(bcdmodule_io_out)
-  );
-  priority_ prioritymodule ( // @[two.scala 56:32]
-    .io_in(prioritymodule_io_in),
-    .io_out(prioritymodule_io_out)
-  );
-  assign io_out = prioritymodule_io_out; // @[two.scala 57:19 62:9]
-  assign io_enableout = io_enable; // @[two.scala 59:18]
-  assign io_led = ~io_enableout ? 8'h0 : bcdmodule_io_out; // @[two.scala 65:32 66:16 68:16]
-  assign bcdmodule_io_in = {{1'd0}, res}; // @[two.scala 63:21]
-  assign prioritymodule_io_in = io_in; // @[two.scala 61:26]
-endmodule
+    wire [3:0] bcd_in [1:0];
+    wire  [7:0] bcd_out [1:0];
+    reg [7:0] p;
+    always @(posedge clock) begin
+        if(p != 8'b00000000) begin
+            p <= {p[3]^p[2]^p[1]^p[0],p[7:1]};
+        end
+        else begin
+            p <= 8'b10101010;
+        end
+    end
+    assign bcd_in[0] = p[3:0];
+    assign bcd_in[1] = p[7:4];
+
+    bcd7 bcd7_0 (.io_in(bcd_in[0]), .io_out(bcd_out[0]));
+    bcd7 bcd7_1 (.io_in(bcd_in[1]), .io_out(bcd_out[1]));
+
+    assign out = {bcd_out[1], bcd_out[0]};
+
+    initial begin
+        p = 8'b01010100;
+    end
+    
+endmodule 
