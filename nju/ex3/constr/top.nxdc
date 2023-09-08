@@ -1,9 +1,9 @@
 top=top
 
-io_a (SW3, SW2, SW1, SW0)
-io_b (SW7, SW6, SW5, SW4)
-io_ch (SW10, SW9, SW8)
-io_out (LD3, LD2, LD1, LD0)
-io_zeroflag (LD4)
-io_overflowflag (LD5)
-io_carryflag (LD6)
+A (SW3, SW2, SW1, SW0)
+B (SW7, SW6, SW5, SW4)
+ch (SW10, SW9, SW8)
+res (LD3, LD2, LD1, LD0)
+ZeroFlag (LD4)
+OverflowFlag (LD5)
+Carryflag (LD6)
