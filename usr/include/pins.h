@@ -1,7 +1,5 @@
-#ifndef _VFPGA_CONSTRS_H
-#define _VFPGA_CONSTRS_H
-
-#include <stdint.h>
+#ifndef _NVBOARD_PINS_H
+#define _NVBOARD_PINS_H
 
 // RST is defined but not used. NVBoard contains some internal states in *.cpp
 // file. Only resetting the RTL design in *.v file may make the RTL design and
@@ -32,7 +30,8 @@
                          SEG6A, SEG6B, SEG6C, SEG6D, SEG6E, SEG6F, SEG6G, DEC6P, \
                          SEG7A, SEG7B, SEG7C, SEG7D, SEG7E, SEG7F, SEG7G, DEC7P
 
-//#define UART_OUTPUT
+#define UART_OUTPUT UART_TX
+#define UART_INPUT  UART_RX
 
 #define VGA_OUTPUT VGA_VSYNC, VGA_HSYNC, VGA_BLANK_N,  \
                    VGA_R0, VGA_R1, VGA_R2, VGA_R3, VGA_R4, VGA_R5, VGA_R6, VGA_R7, \
@@ -45,19 +44,14 @@ enum {
   BTN_INPUT,
   SW_INPUT,
   KEYBOARD_INPUT,
-  NR_INPUT_PINS,
-};
+  UART_INPUT,
 
-enum {
   NAIVE_LEDS_OUTPUT,
   RGB_LEDS_OUTPUT,
-  SEG7_ENBS_OUTPUT,
   SEG7_SEGS_OUTPUT,
   VGA_OUTPUT,
-  NR_OUTPUT_PINS
+  UART_OUTPUT,
+  NR_PINS,
 };
-
-extern uint64_t input_map [];
-extern uint64_t output_map[];
 
 #endif
